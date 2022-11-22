@@ -2,15 +2,32 @@
   "name": "bcollective",
   "license": "UNLICENSED",
   "scripts": {
-    "codegen": "graph codegen",
-    "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ groLabs/bcollective",
+    "old_codegen": "graph codegen",
+    "old_build": "graph build",
+    "old_deploy": "graph deploy --node https://api.thegraph.com/deploy/ groLabs/bcollective",
+    "old_create-local": "graph create --node http://localhost:8020/ groLabs/bcollective",
+    "old_remove-local": "graph remove --node http://localhost:8020/ groLabs/bcollective",
+    "old_deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 groLabs/bcollective",
+    "eth-test-hosted": "SCOPE=test BLOCKCHAIN=ethereum NETWORK=mainnet yarn prepare:subgraph && yarn deploy:mainnet:test:hosted",
+    "eth-prod-hosted": "SCOPE=prod BLOCKCHAIN=ethereum NETWORK=mainnet yarn prepare:subgraph && yarn deploy:mainnet:prod:hosted",
+    "eth-test-studio": "SCOPE=test BLOCKCHAIN=ethereum NETWORK=mainnet yarn prepare:subgraph && yarn deploy:mainnet:test:studio",
+    "eth-prod-studio": "SCOPE=prod BLOCKCHAIN=ethereum NETWORK=mainnet yarn prepare:subgraph && yarn deploy:mainnet:prod:studio",
+    "eth-prod-local": "SCOPE=prod BLOCKCHAIN=ethereum NETWORK=mainnet yarn prepare:subgraph && yarn deploy:mainnet:prod:local",
+    "prepare:subgraph": "mustache ./config/${NETWORK}-${SCOPE}.json ./templates/${BLOCKCHAIN}.subgraph.template.yaml > subgraph.yaml && rm -rf generated && yarn generate:schema && graph codegen && graph build",
+    "generate:schema": "cp ./schemas/${BLOCKCHAIN}.schema.graphql schema.graphql",
+    "deploy:mainnet:test:hosted": "graph deploy --node https://api.thegraph.com/deploy/ sjuanati/gro-test-eth",
+    "deploy:mainnet:prod:hosted": "graph deploy --node https://api.thegraph.com/deploy/ sjuanati/gro-prod-eth",
+    "deploy:mainnet:test:studio": "graph deploy --studio gro-mainnet-test",
+    "deploy:mainnet:prod:studio": "graph deploy --studio gro-mainnet",
+    "deploy:mainnet:prod:local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 groLabs/bcollective",
     "create-local": "graph create --node http://localhost:8020/ groLabs/bcollective",
     "remove-local": "graph remove --node http://localhost:8020/ groLabs/bcollective",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 groLabs/bcollective"
+    "codegen": "graph codegen",
+    "build": "graph build"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.31.0",
-    "@graphprotocol/graph-ts": "0.27.0"
+    "@graphprotocol/graph-ts": "0.27.0",
+    "mustache": "^4.2.0"
   }
 }

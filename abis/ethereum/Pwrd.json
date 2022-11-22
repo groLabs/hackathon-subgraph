@@ -30,7 +30,7 @@
         "type": "uint256"
       }
     ],
-    "name": "Approval",
+    "name": "PwrdApproval",
     "type": "event"
   },
   {
@@ -43,7 +43,7 @@
         "type": "address"
       }
     ],
-    "name": "LogAddToWhitelist",
+    "name": "PwrdLogAddToWhitelist",
     "type": "event"
   },
   {
@@ -56,7 +56,7 @@
         "type": "address"
       }
     ],
-    "name": "LogRemoveFromWhitelist",
+    "name": "PwrdLogRemoveFromWhitelist",
     "type": "event"
   },
   {
@@ -79,15 +79,9 @@
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "factor",
-        "type": "uint256"
       }
     ],
-    "name": "LogTransfer",
+    "name": "PwrdLogTransfer",
     "type": "event"
   },
   {
@@ -106,7 +100,7 @@
         "type": "address"
       }
     ],
-    "name": "OwnershipTransferred",
+    "name": "PwrdOwnershipTransferred",
     "type": "event"
   },
   {
@@ -131,7 +125,7 @@
         "type": "uint256"
       }
     ],
-    "name": "Transfer",
+    "name": "PwrdTransfer",
     "type": "event"
   },
   {
@@ -165,13 +159,6 @@
   {
     "inputs": [],
     "name": "DEFAULT_DECIMALS_FACTOR",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "INIT_BASE",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
