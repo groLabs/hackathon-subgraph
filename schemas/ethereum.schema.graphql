@@ -216,6 +216,14 @@ type Pool @entity {
   vest_all: BigDecimal!
 }
 
+# testing
+type GRouterTx @entity {
+  id: ID!
+  sender: Bytes!
+  amount: BigDecimal!
+  type: TxType
+}
+
 # gro protocol deposits, withdrawals & transfers
 # staker deposits & withdrawals
 type TransferTx @entity {

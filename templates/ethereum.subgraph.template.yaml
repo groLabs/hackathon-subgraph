@@ -3,15 +3,15 @@ schema:
   file: ./schema.graphql
 dataSources:
 # *******************************************************************************************
-# ***********   G R O   *********************************************************************
+# ***********   G R o u t e r   *************************************************************
 # *******************************************************************************************
   - kind: ethereum/contract
-    name: Gro
+    name: GRouter
     network: {{network}}
     source:
-      address: "{{GroAddress}}"
-      abi: Gro
-      startBlock: {{GroStartBlock}}
+      address: "{{GRouterAddress}}"
+      abi: GRouter
+      startBlock: {{GRouterStartBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -21,13 +21,13 @@ dataSources:
         - CoreTx
         - Price
       abis:
-        - name: Gro
-          file: ./abis/ethereum/Gro.json
-        - name: ERC20
-          file: ./abis/ethereum/ERC20.json
+        - name: GRouter
+          file: ./abis/ethereum/GRouter.json
+        # - name: ERC20
+        #   file: ./abis/ethereum/ERC20.json
       eventHandlers:
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
-        - event: Approval(indexed address,indexed address,uint256)
-          handler: handleApproval
-      file: ./src/mappings/gro.ts
+        - event: LogDeposit(indexed address,uint256,uint256,bool,uint256,uint256)
+          handler: handleDeposit
+        - event: LogWithdrawal(indexed address,uint256,uint256,bool,uint256)
+          handler: handleWithdrawal
+      file: ./src/mappings/grouter.ts
