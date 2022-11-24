@@ -49,7 +49,6 @@ type CollectiveParticipant @entity {
   amount: BigDecimal!
   price: BigDecimal!
   stakedAmount: BigDecimal!
-  unstakedAmount: BigDecimal!
 }
 
 type CollectiveParticipantClaim @entity {

@@ -1,4 +1,10 @@
+import { initUser } from './user';
+import { NUM } from '../utils/constants';
 import { tokenToDecimal } from '../utils/tokens';
+import {
+    generateCpId,
+    generateCpcId,
+} from '../utils/collectives';
 import {
     Address,
     BigInt,
@@ -9,9 +15,6 @@ import {
     CollectiveParticipant,
     CollectiveParticipantClaim,
 } from '../../generated/schema';
-import {
-    NUM,
-} from '../utils/constants';
 
 
 const initCollective = (
@@ -23,17 +26,17 @@ const initCollective = (
     vestingTime: i32,
 ): Collective => {
     const id = collectiveAddress.toHexString();
-    let collective = Collective.load(id);
-    if (!collective) {
-        collective = new Collective(id);
-        collective.ownerAddress = ownerAddress.toHexString();
-        collective.participants = participants;
-        collective.creation_date = creationDate;
-        collective.cliff = cliff;
-        collective.vesting_time = vestingTime;
-        collective.save();
+    let col = Collective.load(id);
+    if (!col) {
+        col = new Collective(id);
+        col.ownerAddress = ownerAddress.toHexString();
+        col.participants = participants;
+        col.creation_date = creationDate;
+        col.cliff = cliff;
+        col.vesting_time = vestingTime;
+        col.save();
     }
-    return collective;
+    return col;
 }
 
 const initCollectiveParticipant = (
@@ -44,7 +47,10 @@ const initCollectiveParticipant = (
     amount: BigDecimal,
     price: BigDecimal
 ): CollectiveParticipant => {
-    const id = collectiveAddress.toHexString() + '-' + participantAddress.toHexString();
+    const id = generateCpId(
+        collectiveAddress,
+        participantAddress,
+    );
     let cp = CollectiveParticipant.load(id);
     if (!cp) {
         cp = new CollectiveParticipant(id);
@@ -55,7 +61,7 @@ const initCollectiveParticipant = (
         cp.amount = amount;
         cp.price = price;
         cp.stakedAmount = NUM.ZERO;
-        cp.unstakedAmount = NUM.ZERO;
+        cp.save();
     }
     return cp;
 }
@@ -66,15 +72,18 @@ const initCollectiveParticipantClaim = (
     tokenAddress: Address,
     claimAmount: BigDecimal,
 ): CollectiveParticipantClaim => {
-    const id = collectiveAddress.toHexString()
-        + '-' + participantAddress.toHexString()
-        + '-' + tokenAddress.toHexString();
+    const id = generateCpcId(
+        collectiveAddress,
+        participantAddress,
+        tokenAddress,
+    );
     let cpc = CollectiveParticipantClaim.load(id);
     if (!cpc) {
         cpc = new CollectiveParticipantClaim(id);
         cpc.collectiveParticipant = collectiveAddress.toHexString()
             + '-' + participantAddress.toHexString();
         cpc.claimAmount = claimAmount;
+        cpc.save();
     }
     return cpc;
 }
@@ -91,6 +100,7 @@ export const setNewCollective = (
     cliff: i32,
     vestingTime: i32,
 ): void => {
+    initUser(ownerAddress);
     initCollective(
         collectiveAddress,
         creationDate,
@@ -100,6 +110,7 @@ export const setNewCollective = (
         vestingTime
     );
     for (let i = 0; i < users.length; i++) {
+        initUser(users[i]);
         initCollectiveParticipant(
             collectiveAddress,
             users[i],
@@ -114,5 +125,67 @@ export const setNewCollective = (
             tokens[i],
             NUM.ZERO,
         );
+    }
+}
+
+export const setNewAdmin = (
+    collectiveAddress: Address,
+    adminAddress: Address
+): void => {
+    const id = collectiveAddress.toHexString();
+    let col = Collective.load(id);
+    if (col) {
+        col.ownerAddress = adminAddress.toHexString();
+        col.save();
+    }
+}
+
+export const setTokensStaked = (
+    collectiveAddress: Address,
+    participantAddress: Address,
+    amount: BigDecimal,
+): void => {
+    const id = generateCpId(
+        collectiveAddress,
+        participantAddress,
+    );
+    let cp = CollectiveParticipant.load(id);
+    if (cp) {
+        cp.stakedAmount = cp.stakedAmount.plus(amount);
+        cp.save();
+    }
+}
+
+// @dev: manages both LogTokensUnstaked & LogTokensClaimed events
+export const setTokensClaimed = (
+    collectiveAddress: Address,
+    participantAddress: Address,
+    tokens: Address[],
+    claims: BigInt[],
+    unstaked: BigDecimal,
+) => {
+    if (unstaked.gt(NUM.ZERO)) {
+        const id = generateCpId(
+            collectiveAddress,
+            participantAddress,
+        );
+        let cp = CollectiveParticipant.load(id);
+        if (cp) {
+            cp.unstakedAmount = cp.unstakedAmount.minus(unstaked);
+            cp.save();
+        }
+    }
+    for (let i = 0; i < tokens.length; i++) {
+        const id = generateCpcId(
+            collectiveAddress,
+            participantAddress,
+            tokens[i],
+        );
+        let cpc = CollectiveParticipantClaim.load(id);
+        if (cpc) {
+            const claimAmount = tokenToDecimal(claims[i], 18, 7);
+            cpc.claimAmount = cpc.claimAmount.plus(claimAmount);
+            cpc.save();
+        }
     }
 }
