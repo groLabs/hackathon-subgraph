@@ -23,6 +23,15 @@ enum NetworkName {
   avalanche
 }
 
+# Events List:
+# ------------
+# LogNewCollectiveInitialized(string[] name, address[] tokens, uint128[] price, address[] users, uint256[] amounts, uint32 collectiveInfo.cliff, uint32 collectiveInfo.vestimTime);
+# LogNewAdmin(address newAdmin);
+# LogNewPoolInitialized(uint256);
+# LogTokensStaked(address user, uint256 amount);
+# LogTokensUnstaked(address user, uint256 unstakedAmount, address[] tokens, uint256[] claim)
+# LogTokensClaimed(address user, address[] tokens, uint256[] claim)
+
 # Entities
 
 type User @entity {
@@ -34,10 +43,11 @@ type User @entity {
 type Collective @entity {
   id: ID! # collectiveAddress
   ownerAddress: User! # FK to User on collectivesOwner[]
-  participants: [Bytes!]!
+  # participants: [Bytes!]!
   creation_date: Int!
   cliff: Int!
   vesting_time: Int!
+  initialized: Boolean!
 }
 
 type CollectiveParticipant @entity {
@@ -56,14 +66,6 @@ type CollectiveParticipantClaim @entity {
   collectiveParticipant: CollectiveParticipant!
   claimAmount: BigDecimal!
 }
-
-
-# LogNewCollectiveInitialized(string[] name, address[], tokens, uint128[] price, address[] users, uint256[] amounts, uint32 collectiveInfo.cliff, uint32 collectiveInfo.vestimTime);
-# LogNewAdmin(address newAdmin);
-# LogNewPoolInitialized(uint256);
-# LogTokensStaked(address user, uint256 amount);
-# LogTokensUnstaked(address user, uint256 unstakedAmount, address[] tokens, uint256[] claim)
-# LogTokensClaimed(address user, address[] tokens, uint256[] claim)
 
 # testing
 type GRouterTx @entity {

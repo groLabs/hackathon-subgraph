@@ -21,7 +21,7 @@ const initCollective = (
     collectiveAddress: Address,
     creationDate: i32,
     ownerAddress: Address,
-    participants: Address[],
+    // participants: Address[],
     cliff: i32,
     vestingTime: i32,
 ): Collective => {
@@ -30,10 +30,11 @@ const initCollective = (
     if (!col) {
         col = new Collective(id);
         col.ownerAddress = ownerAddress.toHexString();
-        col.participants = participants;
+        // col.participants = participants;
         col.creation_date = creationDate;
         col.cliff = cliff;
         col.vesting_time = vestingTime;
+        col.initialized = false;
         col.save();
     }
     return col;
@@ -105,7 +106,7 @@ export const setNewCollective = (
         collectiveAddress,
         creationDate,
         ownerAddress,
-        users,
+        // users,
         cliff,
         vestingTime
     );
@@ -116,8 +117,8 @@ export const setNewCollective = (
             users[i],
             names[i],
             tokens[i],
-            tokenToDecimal(amounts[i], 18, 7),  //todo: always 18 decimals?
-            tokenToDecimal(prices[i], 18, 7),   //todo: always 18 decimals?
+            tokenToDecimal(amounts[i], 18, 7),
+            tokenToDecimal(prices[i], 18, 7),
         );
         initCollectiveParticipantClaim(
             collectiveAddress,
@@ -163,18 +164,17 @@ export const setTokensClaimed = (
     tokens: Address[],
     claims: BigInt[],
     unstaked: BigDecimal,
-) => {
-    if (unstaked.gt(NUM.ZERO)) {
-        const id = generateCpId(
-            collectiveAddress,
-            participantAddress,
-        );
-        let cp = CollectiveParticipant.load(id);
-        if (cp) {
-            cp.unstakedAmount = cp.unstakedAmount.minus(unstaked);
-            cp.save();
-        }
+): void => {
+    const id = generateCpId(
+        collectiveAddress,
+        participantAddress,
+    );
+    let cp = CollectiveParticipant.load(id);
+    if (cp) {
+        cp.stakedAmount = cp.stakedAmount.minus(unstaked);
+        cp.save();
     }
+    // missing: deduct claim on amounts
     for (let i = 0; i < tokens.length; i++) {
         const id = generateCpcId(
             collectiveAddress,
@@ -187,5 +187,16 @@ export const setTokensClaimed = (
             cpc.claimAmount = cpc.claimAmount.plus(claimAmount);
             cpc.save();
         }
+    }
+}
+
+export const setPoolInitialized = (
+    collectiveAddress: Address,
+): void => {
+    const id = collectiveAddress.toHexString();
+    let col = Collective.load(id);
+    if (col) {
+        col.initialized = true;
+        col.save();
     }
 }
