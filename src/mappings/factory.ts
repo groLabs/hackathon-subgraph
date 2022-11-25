@@ -1,8 +1,6 @@
-import {
-    LogDeposit,
-} from '../../generated/GRouter/GRouter';
+import { LogNewBuilderProxyDeployed } from '../../generated/Factory/BuidlerFactory';
 
 
-export function handleNewProxyDeployed(event: LogDeposit): void {
-    // do something
+export function handleNewProxy(event: LogNewBuilderProxyDeployed): void {
+    // do nothing (just to enable the factory contract in the manifest)
 }

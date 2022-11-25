@@ -21,7 +21,7 @@ const initCollective = (
     collectiveAddress: Address,
     creationDate: i32,
     ownerAddress: Address,
-    // participants: Address[],
+    participants: Address[],
     cliff: i32,
     vestingTime: i32,
 ): Collective => {
@@ -106,7 +106,7 @@ export const setNewCollective = (
         collectiveAddress,
         creationDate,
         ownerAddress,
-        // users,
+        users,
         cliff,
         vestingTime
     );
@@ -141,6 +141,7 @@ export const setNewAdmin = (
     }
 }
 
+// possibly to be removed
 export const setTokensStaked = (
     collectiveAddress: Address,
     participantAddress: Address,
@@ -153,6 +154,27 @@ export const setTokensStaked = (
     let cp = CollectiveParticipant.load(id);
     if (cp) {
         cp.stakedAmount = cp.stakedAmount.plus(amount);
+        cp.save();
+    }
+}
+
+export const setTokensStakedOrUnstaked = (
+    collectiveAddress: Address,
+    participantAddress: Address,
+    amount: BigDecimal,
+    side: string,
+): void => {
+    const id = generateCpId(
+        collectiveAddress,
+        participantAddress,
+    );
+    let cp = CollectiveParticipant.load(id);
+    if (cp) {
+        if (side == 'staked') {
+            cp.stakedAmount = cp.stakedAmount.plus(amount);
+        } else if (side == 'unstake') {
+            cp.stakedAmount = cp.stakedAmount.minus(amount);
+        }
         cp.save();
     }
 }

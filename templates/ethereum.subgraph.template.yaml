@@ -55,14 +55,51 @@ dataSources:
           handler: handleNewProxy
       file: ./src/mappings/factory.ts
 # *******************************************************************************************
-# ***********   BCP (Builder Collective Pool)   *********************************************
+# ***********   BCP (Builder Collective Pool) via TEMPLATE **********************************
 # *******************************************************************************************
-templates:
+# templates:
+#   - kind: ethereum/contract
+#     name: BCP
+#     network: {{network}}
+#     source:
+#       abi: BuidlCollective
+#     mapping:
+#       kind: ethereum/events
+#       apiVersion: 0.0.7
+#       language: wasm/assemblyscript
+#       entities:
+#         - TBD
+#       abis:
+#         - name: BuidlerFactory
+#           file: ./abis/ethereum/BuidlerFactory.json
+#         - name: BuidlCollective
+#           file: ./abis/ethereum/BuidlCollective.json
+#       eventHandlers:
+#         # - event: LogNewCollectiveInitialized(string[],address[],uint128[],address[],uint256[],uint32,uint32)
+#         - event: LogNewCollectiveInitialized(address[],uint128[],address[],uint256[],uint32,uint32)
+#           handler: handleNewCollectiveInitialized
+#         - event: LogNewAdmin(address)
+#           handler: handleNewAdmin
+#         - event: LogNewPoolInitialized(uint256)
+#           handler: handleNewPoolInitialized
+#         # - event: LogTokensStaked(address,uint256)
+#         #   handler: handleTokensStaked
+#         # - event: LogTokensUnstaked(address,uint256,address[],uint256[])
+#         #   handler: handleTokensUnstaked
+#         # - event: LogTokensClaimed(address,address[],uint256[])
+#         - event: LogClaim(address,uint256,address[],uint256[])
+#           handler: handleTokensClaimed
+#       file: ./src/mappings/bcp.ts
+# *******************************************************************************************
+# ***********   BCP (Builder Collective Pool) via deployed contract *************************
+# *******************************************************************************************
   - kind: ethereum/contract
     name: BCP
     network: {{network}}
     source:
+      address: "{{BuidlCollectiveDeployedAddress}}"
       abi: BuidlCollective
+      startBlock: {{BuidlCollectiveDeployedStartBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -73,19 +110,18 @@ templates:
         - name: BuidlerFactory
           file: ./abis/ethereum/BuidlerFactory.json
         - name: BuidlCollective
-          file: ./abis/ethereum/BuidlCollective.json
+          file: ./abis/ethereum/BuidlCollectiveDeployed.json
       eventHandlers:
-        # - event: LogNewCollectiveInitialized(string[],address[],uint128[],address[],uint256[],uint32,uint32)
-        - event: LogNewCollectiveInitialized(address[],uint128[],address[],uint256[],uint32,uint32)
+        - event: LogNewCollectiveInitialized(string[],address[],uint128[],address[],uint256[],uint32,uint32)
           handler: handleNewCollectiveInitialized
-        - event: LogNewAdmin(address)
-          handler: handleNewAdmin
+        # - event: LogNewAdmin(address)
+        #   handler: handleNewAdmin
         - event: LogNewPoolInitialized(uint256)
           handler: handleNewPoolInitialized
-        # - event: LogTokensStaked(address,uint256)
-        #   handler: handleTokensStaked
-        # - event: LogTokensUnstaked(address,uint256,address[],uint256[])
-        #   handler: handleTokensUnstaked
-        # - event: LogTokensClaimed(address,address[],uint256[])
-        #   handler: handleTokensClaimed
-      file: ./src/mappings/bcp.ts
+        - event: LogTokensStaked(address,uint256)
+          handler: handleTokensStaked
+        - event: LogTokensUnstaked(address,uint256)
+          handler: handleTokensUnstaked
+        - event: LogTokensClaimed(address,uint256,address[],uint256[])
+          handler: handleTokensClaimed
+      file: ./src/mappings/bcpDeployed.ts

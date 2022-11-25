@@ -1,12 +1,11 @@
-// TO BE REPLACED
-import {
-    LogDeposit,
-} from '../../generated/GRouter/GRouter';
-import {
-    LogNewCollectiveInitialized
-} from '../../generated/Factory/BuidlCollective';
 import { NUM } from '../utils/constants';
 import { tokenToDecimal } from '../utils/tokens';
+import { LogDeposit } from '../../generated/GRouter/GRouter';
+import {
+    LogClaim,
+    LogNewAdmin,
+    LogNewCollectiveInitialized,
+} from '../../generated/Factory/BuidlCollective';
 import {
     setNewAdmin,
     setTokensStaked,
@@ -21,7 +20,7 @@ export function HandleNewCollectiveInitialized(event: LogNewCollectiveInitialize
         event.address,
         event.transaction.from,
         event.block.timestamp.toI32(),
-        [], // event.params.name,
+        // ** TEMP [], // event.params.name,
         event.params.tokens,
         event.params.price,
         event.params.users,
@@ -31,10 +30,10 @@ export function HandleNewCollectiveInitialized(event: LogNewCollectiveInitialize
     );
 }
 
-export function HandleNewAdmin(event: LogDeposit): void {
+export function HandleNewAdmin(event: LogNewAdmin): void {
     setNewAdmin(
-        event.transaction.from,
-        event.transaction.from, // event.params.newAdmin,
+        event.address,
+        event.params.newAdmin,
     );
 }
 
@@ -56,13 +55,13 @@ export function HandleTokensUnstaked(event: LogDeposit): void {
     );
 }
 
-export function HandleTokensClaimed(event: LogDeposit): void {
+export function HandleTokensClaimed(event: LogClaim): void {
     setTokensClaimed(
         event.address,
-        event.address, //event.params.user
-        [], // event.params.tokens,
-        [], // event.params.claim
-        tokenToDecimal(event.params.calcAmount, 18, 7), // event.params.unstakedAmount
+        event.params.user,
+        event.params.tokens,
+        event.params.amounts, // event.params.claim,
+        tokenToDecimal(event.params.share, 18, 7), // event.params.unstakedAmount
     );
 }
 
