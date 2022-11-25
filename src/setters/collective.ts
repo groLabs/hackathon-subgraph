@@ -179,7 +179,6 @@ export const setTokensStakedOrUnstaked = (
     }
 }
 
-// @dev: manages both LogTokensUnstaked & LogTokensClaimed events
 export const setTokensClaimed = (
     collectiveAddress: Address,
     participantAddress: Address,

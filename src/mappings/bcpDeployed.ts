@@ -1,74 +1,73 @@
-// import { NUM } from '../utils/constants';
-import { tokenToDecimal } from '../utils/tokens';
-import {
-    setNewAdmin,
-    setTokensClaimed,
-    setNewCollective,
-    setPoolInitialized,
-    setTokensStakedOrUnstaked,
-} from '../setters/collective';
-import {
-    LogNewAdmin,
-    LogTokensStaked,
-    LogTokensClaimed,
-    LogTokensUnstaked,
-    LogNewPoolInitialized,
-    LogNewCollectiveInitialized,
-} from '../../generated/BCP/BuidlCollective';
+// import { tokenToDecimal } from '../utils/tokens';
+// import {
+//     setNewAdmin,
+//     setTokensClaimed,
+//     setNewCollective,
+//     setPoolInitialized,
+//     setTokensStakedOrUnstaked,
+// } from '../setters/collective';
+// import {
+//     LogNewAdmin,
+//     LogTokensStaked,
+//     LogTokensClaimed,
+//     LogTokensUnstaked,
+//     LogNewPoolInitialized,
+//     LogNewCollectiveInitialized,
+// } from '../../generated/BCP/BuidlCollective';
 
 
-export function HandleNewCollectiveInitialized(event: LogNewCollectiveInitialized): void {
-    setNewCollective(
-        event.address,
-        event.transaction.from,
-        event.block.timestamp.toI32(),
-        event.params.namesOfParticipants,
-        event.params.tokens,
-        event.params.price,
-        event.params.users,
-        event.params.targets,
-        event.params.cliff.toI32(),
-        event.params.vestimTime.toI32(),
-    );
-}
+// export function handleNewCollective(event: LogNewCollectiveInitialized): void {
+//     setNewCollective(
+//         event.address,
+//         event.transaction.from,
+//         event.block.timestamp.toI32(),
+//         event.params.namesOfParticipants,
+//         event.params.tokens,
+//         event.params.price,
+//         event.params.users,
+//         event.params.targets,
+//         event.params.cliff.toI32(),
+//         event.params.vestimTime.toI32(),
+//     );
+// }
 
-export function HandleNewAdmin(event: LogNewAdmin): void {
-    setNewAdmin(
-        event.address,
-        event.params.newAdmin,
-    );
-}
+// export function HandleNewAdmin(event: LogNewAdmin): void {
+//     setNewAdmin(
+//         event.address,
+//         event.params.newAdmin,
+//     );
+// }
 
-export function HandleTokensStaked(event: LogTokensStaked): void {
-    setTokensStakedOrUnstaked(
-        event.address,
-        event.params.user,
-        tokenToDecimal(event.params._assetValue, 18, 7),
-        'stake',
-    );
-}
+// export function HandleTokensStaked(event: LogTokensStaked): void {
+//     setTokensStakedOrUnstaked(
+//         event.address,
+//         event.params.user,
+//         tokenToDecimal(event.params._assetValue, 18, 7),
+//         'stake',
+//     );
+// }
 
-export function HandleTokensUnstaked(event: LogTokensUnstaked): void {
-    setTokensStakedOrUnstaked(
-        event.address,
-        event.params.user,
-        tokenToDecimal(event.params._assetValue, 18, 7),
-        'unstaked',
-    );
-}
+// export function HandleTokensUnstaked(event: LogTokensUnstaked): void {
+//     setTokensStakedOrUnstaked(
+//         event.address,
+//         event.params.user,
+//         tokenToDecimal(event.params._assetValue, 18, 7),
+//         'unstaked',
+//     );
+// }
 
-export function HandleTokensClaimed(event: LogTokensClaimed): void {
-    setTokensClaimed(
-        event.address,
-        event.params.user,
-        event.params.tokens,
-        event.params.amounts,
-        tokenToDecimal(event.params.share, 18, 7), // TODO: event.params.unstakedAmount
-    );
-}
+// export function HandleTokensClaimed(event: LogTokensClaimed): void {
+//     setTokensClaimed(
+//         event.address,
+//         event.params.user,
+//         event.params.tokens,
+//         event.params.amounts,
+//         tokenToDecimal(event.params.share, 18, 7), // TODO: event.params.unstakedAmount
+//     );
+// }
 
-export function HandleNewPoolInitialized(event: LogNewPoolInitialized): void {
-    setPoolInitialized(
-        event.address,
-    );
-}
+// export function HandleNewPoolInitialized(event: LogNewPoolInitialized): void {
+//     setPoolInitialized(
+//         event.address,
+//     );
+// }

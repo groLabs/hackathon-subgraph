@@ -5,30 +5,30 @@ dataSources:
 # *******************************************************************************************
 # ***********   G R o u t e r   *************************************************************
 # *******************************************************************************************
-  - kind: ethereum/contract
-    name: GRouter
-    network: {{network}}
-    source:
-      address: "{{GRouterAddress}}"
-      abi: GRouter
-      startBlock: {{GRouterStartBlock}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - User
-        - CoreTx
-        - Price
-      abis:
-        - name: GRouter
-          file: ./abis/ethereum/GRouter.json
-      eventHandlers:
-        - event: LogDeposit(indexed address,uint256,uint256,bool,uint256,uint256)
-          handler: handleDeposit
-        - event: LogWithdrawal(indexed address,uint256,uint256,bool,uint256)
-          handler: handleWithdrawal
-      file: ./src/mappings/grouter.ts
+  # - kind: ethereum/contract
+  #   name: GRouter
+  #   network: {{network}}
+  #   source:
+  #     address: "{{GRouterAddress}}"
+  #     abi: GRouter
+  #     startBlock: {{GRouterStartBlock}}
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.7
+  #     language: wasm/assemblyscript
+  #     entities:
+  #       - User
+  #       - CoreTx
+  #       - Price
+  #     abis:
+  #       - name: GRouter
+  #         file: ./abis/ethereum/GRouter.json
+  #     eventHandlers:
+  #       - event: LogDeposit(indexed address,uint256,uint256,bool,uint256,uint256)
+  #         handler: handleDeposit
+  #       - event: LogWithdrawal(indexed address,uint256,uint256,bool,uint256)
+  #         handler: handleWithdrawal
+  #     file: ./src/mappings/grouter.ts
 # *******************************************************************************************
 # ***********   F A C T O R Y   *************************************************************
 # *******************************************************************************************
@@ -48,8 +48,6 @@ dataSources:
       abis:
         - name: BuidlerFactory
           file: ./abis/ethereum/BuidlerFactory.json
-        - name: BuidlCollective
-          file: ./abis/ethereum/BuidlCollective.json
       eventHandlers:
         - event: LogNewBuilderProxyDeployed(address,address)
           handler: handleNewProxy
@@ -57,49 +55,12 @@ dataSources:
 # *******************************************************************************************
 # ***********   BCP (Builder Collective Pool) via TEMPLATE **********************************
 # *******************************************************************************************
-# templates:
-#   - kind: ethereum/contract
-#     name: BCP
-#     network: {{network}}
-#     source:
-#       abi: BuidlCollective
-#     mapping:
-#       kind: ethereum/events
-#       apiVersion: 0.0.7
-#       language: wasm/assemblyscript
-#       entities:
-#         - TBD
-#       abis:
-#         - name: BuidlerFactory
-#           file: ./abis/ethereum/BuidlerFactory.json
-#         - name: BuidlCollective
-#           file: ./abis/ethereum/BuidlCollective.json
-#       eventHandlers:
-#         # - event: LogNewCollectiveInitialized(string[],address[],uint128[],address[],uint256[],uint32,uint32)
-#         - event: LogNewCollectiveInitialized(address[],uint128[],address[],uint256[],uint32,uint32)
-#           handler: handleNewCollectiveInitialized
-#         - event: LogNewAdmin(address)
-#           handler: handleNewAdmin
-#         - event: LogNewPoolInitialized(uint256)
-#           handler: handleNewPoolInitialized
-#         # - event: LogTokensStaked(address,uint256)
-#         #   handler: handleTokensStaked
-#         # - event: LogTokensUnstaked(address,uint256,address[],uint256[])
-#         #   handler: handleTokensUnstaked
-#         # - event: LogTokensClaimed(address,address[],uint256[])
-#         - event: LogClaim(address,uint256,address[],uint256[])
-#           handler: handleTokensClaimed
-#       file: ./src/mappings/bcp.ts
-# *******************************************************************************************
-# ***********   BCP (Builder Collective Pool) via deployed contract *************************
-# *******************************************************************************************
+templates:
   - kind: ethereum/contract
-    name: BCP
+    name: BuidlCollective
     network: {{network}}
     source:
-      address: "{{BuidlCollectiveDeployedAddress}}"
       abi: BuidlCollective
-      startBlock: {{BuidlCollectiveDeployedStartBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -110,12 +71,12 @@ dataSources:
         - name: BuidlerFactory
           file: ./abis/ethereum/BuidlerFactory.json
         - name: BuidlCollective
-          file: ./abis/ethereum/BuidlCollectiveDeployed.json
+          file: ./abis/ethereum/BuidlCollective.json
       eventHandlers:
         - event: LogNewCollectiveInitialized(string[],address[],uint128[],address[],uint256[],uint32,uint32)
           handler: handleNewCollectiveInitialized
-        # - event: LogNewAdmin(address)
-        #   handler: handleNewAdmin
+        - event: LogNewAdmin(address)
+          handler: handleNewAdmin
         - event: LogNewPoolInitialized(uint256)
           handler: handleNewPoolInitialized
         - event: LogTokensStaked(address,uint256)
@@ -124,4 +85,39 @@ dataSources:
           handler: handleTokensUnstaked
         - event: LogTokensClaimed(address,uint256,address[],uint256[])
           handler: handleTokensClaimed
-      file: ./src/mappings/bcpDeployed.ts
+      file: ./src/mappings/bcp.ts
+# *******************************************************************************************
+# ***********   BCP (Builder Collective Pool) via deployed contract *************************
+# *******************************************************************************************
+  # - kind: ethereum/contract
+  #   name: BCP
+  #   network: {{network}}
+  #   source:
+  #     address: "{{BuidlCollectiveDeployedAddress}}"
+  #     abi: BuidlCollective
+  #     startBlock: {{BuidlCollectiveDeployedStartBlock}}
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.7
+  #     language: wasm/assemblyscript
+  #     entities:
+  #       - TBD
+  #     abis:
+  #       - name: BuidlerFactory
+  #         file: ./abis/ethereum/BuidlerFactory.json
+  #       - name: BuidlCollective
+  #         file: ./abis/ethereum/BuidlCollective.json
+  #     eventHandlers:
+  #       - event: LogNewCollectiveInitialized(string[],address[],uint128[],address[],uint256[],uint32,uint32)
+  #         handler: handleNewCollective
+  #       - event: LogNewAdmin(address)
+  #         handler: handleNewAdmin
+  #       - event: LogNewPoolInitialized(uint256)
+  #         handler: handleNewPoolInitialized
+  #       - event: LogTokensStaked(address,uint256)
+  #         handler: handleTokensStaked
+  #       - event: LogTokensUnstaked(address,uint256)
+  #         handler: handleTokensUnstaked
+  #       - event: LogTokensClaimed(address,uint256,address[],uint256[])
+  #         handler: handleTokensClaimed
+  #     file: ./src/mappings/bcpDeployed.ts
