@@ -34,7 +34,7 @@ const initCollective = (
         col.creation_date = creationDate;
         col.cliff = cliff;
         col.vesting_time = vestingTime;
-        col.initialized = false;
+        col.started = false;
         col.save();
     }
     return col;
@@ -118,7 +118,7 @@ export const setNewCollective = (
             names[i],
             tokens[i],
             tokenToDecimal(amounts[i], 18, 7),
-            tokenToDecimal(prices[i], 18, 7),
+            prices[i].toBigDecimal(),
         );
         initCollectiveParticipantClaim(
             collectiveAddress,
@@ -217,7 +217,7 @@ export const setPoolInitialized = (
     const id = collectiveAddress.toHexString();
     let col = Collective.load(id);
     if (col) {
-        col.initialized = true;
+        col.started = true;
         col.save();
     }
 }

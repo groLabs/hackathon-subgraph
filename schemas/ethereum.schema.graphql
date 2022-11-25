@@ -1,28 +1,3 @@
-# Enums
-
-enum TxType {
-  core_deposit
-  core_withdrawal
-  staker_deposit
-  staker_withdrawal
-  transfer_in
-  transfer_out
-  claim
-  multiclaim
-  vest
-  approval
-}
-
-enum Status {
-  ok
-  error
-}
-
-enum NetworkName {
-  mainnet
-  avalanche
-}
-
 # Events List:
 # ------------
 # LogNewCollectiveInitialized(string[] name, address[] tokens, uint128[] price, address[] users, uint256[] amounts, uint32 collectiveInfo.cliff, uint32 collectiveInfo.vestimTime);
@@ -43,11 +18,11 @@ type User @entity {
 type Collective @entity {
   id: ID! # collectiveAddress
   ownerAddress: User! # FK to User on collectivesOwner[]
-  # participants: [Bytes!]!
+  participants: [CollectiveParticipant!] @derivedFrom(field: "collectiveAddress")
   creation_date: Int!
   cliff: Int!
   vesting_time: Int!
-  initialized: Boolean!
+  started: Boolean!
 }
 
 type CollectiveParticipant @entity {
@@ -65,12 +40,4 @@ type CollectiveParticipantClaim @entity {
   id: ID! # collectiveAddress-participantAddress-tokenAddress
   collectiveParticipant: CollectiveParticipant!
   claimAmount: BigDecimal!
-}
-
-# testing
-type GRouterTx @entity {
-  id: ID!
-  sender: Bytes!
-  amount: BigDecimal!
-  type: TxType
 }

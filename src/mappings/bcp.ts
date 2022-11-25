@@ -1,4 +1,3 @@
-import { log } from '@graphprotocol/graph-ts';
 import { tokenToDecimal } from '../utils/tokens';
 import {
     setNewAdmin,
@@ -14,12 +13,10 @@ import {
     LogTokensUnstaked,
     LogNewPoolInitialized,
     LogNewCollectiveInitialized,
-// } from '../../generated/templates/BuidlCollective/BuidlCollective';
 } from '../../generated/templates/BuidlCollective/BuidlCollective';
 
 
-export function handleNewCollective(event: LogNewCollectiveInitialized): void {
-    log.error('****** HandleNewCollectiveInitialized {}',[event.params.cliff.toString()]);
+export function handleNewCollectiveInitialized(event: LogNewCollectiveInitialized): void {
     setNewCollective(
         event.address,
         event.transaction.from,
