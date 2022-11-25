@@ -84,6 +84,7 @@ const initCollectiveParticipantClaim = (
         cpc.collectiveParticipant = collectiveAddress.toHexString()
             + '-' + participantAddress.toHexString();
         cpc.claimAmount = claimAmount;
+        cpc.tokenAddress = tokenAddress;
         cpc.save();
     }
     return cpc;

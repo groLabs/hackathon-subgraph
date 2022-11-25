@@ -27,6 +27,7 @@ type Collective @entity {
 
 type CollectiveParticipant @entity {
   id: ID! # collectiveAddress-participantAddress
+  # participantClaims: 
   collectiveAddress: Collective!  # FK to Collective on participants[]
   participantAddress: User! # FK to User on collectivesParticipant[]
   name: String!
@@ -39,5 +40,6 @@ type CollectiveParticipant @entity {
 type CollectiveParticipantClaim @entity {
   id: ID! # collectiveAddress-participantAddress-tokenAddress
   collectiveParticipant: CollectiveParticipant!
+  tokenAddress: Bytes!
   claimAmount: BigDecimal!
 }

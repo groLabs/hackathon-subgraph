@@ -31,14 +31,14 @@ export function handleNewCollectiveInitialized(event: LogNewCollectiveInitialize
     );
 }
 
-export function HandleNewAdmin(event: LogNewAdmin): void {
+export function handleNewAdmin(event: LogNewAdmin): void {
     setNewAdmin(
         event.address,
         event.params.newAdmin,
     );
 }
 
-export function HandleTokensStaked(event: LogTokensStaked): void {
+export function handleTokensStaked(event: LogTokensStaked): void {
     setTokensStakedOrUnstaked(
         event.address,
         event.params.user,
@@ -47,7 +47,7 @@ export function HandleTokensStaked(event: LogTokensStaked): void {
     );
 }
 
-export function HandleTokensUnstaked(event: LogTokensUnstaked): void {
+export function handleTokensUnstaked(event: LogTokensUnstaked): void {
     setTokensStakedOrUnstaked(
         event.address,
         event.params.user,
@@ -56,7 +56,7 @@ export function HandleTokensUnstaked(event: LogTokensUnstaked): void {
     );
 }
 
-export function HandleTokensClaimed(event: LogTokensClaimed): void {
+export function handleTokensClaimed(event: LogTokensClaimed): void {
     setTokensClaimed(
         event.address,
         event.params.user,
@@ -66,7 +66,7 @@ export function HandleTokensClaimed(event: LogTokensClaimed): void {
     );
 }
 
-export function HandleNewPoolInitialized(event: LogNewPoolInitialized): void {
+export function handleNewPoolInitialized(event: LogNewPoolInitialized): void {
     setPoolInitialized(
         event.address,
     );
