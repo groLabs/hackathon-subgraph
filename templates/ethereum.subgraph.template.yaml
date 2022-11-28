@@ -45,6 +45,8 @@ templates:
           file: ./abis/ethereum/BuidlerFactory.json
         - name: BuidlCollective
           file: ./abis/ethereum/BuidlCollective.json
+        - name: ERC20
+          file: ./abis/ethereum/ERC20.json
       eventHandlers:
         - event: LogNewCollectiveInitialized(string[],address[],uint128[],address[],uint256[],uint32,uint32)
           handler: handleNewCollectiveInitialized

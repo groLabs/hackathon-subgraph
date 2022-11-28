@@ -1,6 +1,9 @@
 import { initUser } from './user';
 import { NUM } from '../utils/constants';
-import { tokenToDecimal } from '../utils/tokens';
+import {
+    getBase,
+    tokenToDecimal
+} from '../utils/tokens';
 import {
     generateCpId,
     generateCpcId,
@@ -113,12 +116,14 @@ export const setNewCollective = (
     );
     for (let i = 0; i < users.length; i++) {
         initUser(users[i]);
+        const base = getBase(tokens[i]);
+        const amount = tokenToDecimal(amounts[i], base, 7);
         initCollectiveParticipant(
             collectiveAddress,
             users[i],
             names[i],
             tokens[i],
-            tokenToDecimal(amounts[i], 18, 7),
+            amount,
             prices[i].toBigDecimal(),
         );
         initCollectiveParticipantClaim(
@@ -203,10 +208,11 @@ export const setTokensClaimed = (
             participantAddress,
             tokens[i],
         );
+        const base = getBase(tokens[i]);
+        const claim = tokenToDecimal(claims[i], base, 7);
         let cpc = CollectiveParticipantClaim.load(id);
         if (cpc) {
-            const claimAmount = tokenToDecimal(claims[i], 18, 7);
-            cpc.claimAmount = cpc.claimAmount.plus(claimAmount);
+            cpc.claimAmount = cpc.claimAmount.plus(claim);
             cpc.save();
         }
     }
