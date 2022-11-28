@@ -27,7 +27,7 @@ type Collective @entity {
 
 type CollectiveParticipant @entity {
   id: ID! # collectiveAddress-participantAddress
-  # participantClaims: 
+  participantClaims: [CollectiveParticipantClaim!] @derivedFrom(field: "collectiveParticipant")
   collectiveAddress: Collective!  # FK to Collective on participants[]
   participantAddress: User! # FK to User on collectivesParticipant[]
   name: String!
