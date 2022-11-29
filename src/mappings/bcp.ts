@@ -69,5 +69,6 @@ export function handleTokensClaimed(event: LogTokensClaimed): void {
 export function handleNewPoolInitialized(event: LogNewPoolInitialized): void {
     setPoolInitialized(
         event.address,
+        event.block.timestamp.toI32(),
     );
 }

@@ -23,6 +23,7 @@ type Collective @entity {
   cliff: Int!
   vesting_time: Int!
   started: Boolean!
+  started_date: Int!
 }
 
 type CollectiveParticipant @entity {

@@ -38,6 +38,7 @@ const initCollective = (
         col.cliff = cliff;
         col.vesting_time = vestingTime;
         col.started = false;
+        col.started_date = 0;
         col.save();
     }
     return col;
@@ -220,11 +221,13 @@ export const setTokensClaimed = (
 
 export const setPoolInitialized = (
     collectiveAddress: Address,
+    startDate: i32,
 ): void => {
     const id = collectiveAddress.toHexString();
     let col = Collective.load(id);
     if (col) {
         col.started = true;
+        col.started_date = startDate;
         col.save();
     }
 }
