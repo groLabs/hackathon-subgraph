@@ -9,8 +9,9 @@ import {
     generateCpcId,
 } from '../utils/collectives';
 import {
-    Address,
+    log,
     BigInt,
+    Address,
     BigDecimal,
 } from '@graphprotocol/graph-ts';
 import {
@@ -181,14 +182,27 @@ export const setTokensStakedOrUnstaked = (
         participantAddress,
     );
     let cp = CollectiveParticipant.load(id);
+    // TODO: For testing
+    log.error(
+        '*** setTokensStakedOrUnstaked event -> amount: {} depositedShare: {} lastCheckpointTWAP: {} lastCheckpointTime: {} lastCheckpointPercentageVested: {} side: {} id: {}',
+        [
+            amount.toString(),
+            depositedShare.toString(),
+            lastCheckpointTWAP.toString(),
+            lastCheckpointTime.toString(),
+            lastCheckpointPercentageVested.toString(),
+            side,
+            id,
+        ]
+    );
     if (cp) {
         if (side == 'staked') {
             cp.stakedAmount = cp.stakedAmount.plus(amount);
-            cp.depositedShare = depositedShare;
+            cp.depositedShare = cp.depositedShare.plus(depositedShare);
             cp.lastCheckpointTWAP = lastCheckpointTWAP;
             cp.lastCheckpointTime = lastCheckpointTime;
             cp.lastCheckpointPercentageVested = lastCheckpointPercentageVested;
-        } else if (side == 'unstake') {
+        } else if (side == 'unstaked') {
             cp.stakedAmount = cp.stakedAmount.minus(amount);
         }
         cp.save();
