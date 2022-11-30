@@ -4,11 +4,6 @@ import {
     Address,
     BigDecimal,
 } from '@graphprotocol/graph-ts';
-import {
-    NUM,
-    ADDR,
-    DECIMALS,
-} from '../utils/constants';
 import { ERC20 } from '../../generated/templates/BuidlCollective/ERC20';
 
 // Converts a BigInt into a N-decimal BigDecimal
@@ -25,6 +20,7 @@ export function tokenToDecimal(
         .truncate(decimals);
 }
 
+// Get base decimals depending on token contract
 export const getBase = (
     tokenAddress: Address
 ): i32 => {
@@ -32,7 +28,7 @@ export const getBase = (
     const decimals = contract.try_decimals();
     if (decimals.reverted) {
         log.error(
-            'Error in src->utils->getBase(): decimals reverted on token address {}'
+            'Error in src->utils->tokens->getBase(): decimals reverted on token address {}'
             , [tokenAddress.toHexString()]
         );
         return i32(0);
