@@ -24,7 +24,6 @@ const initCollective = (
     collectiveAddress: Address,
     creationDate: i32,
     ownerAddress: Address,
-    participants: Address[],
     cliff: i32,
     vestingTime: i32,
 ): Collective => {
@@ -33,7 +32,6 @@ const initCollective = (
     if (!col) {
         col = new Collective(id);
         col.ownerAddress = ownerAddress.toHexString();
-        // col.participants = participants;
         col.creation_date = creationDate;
         col.cliff = cliff;
         col.vesting_time = vestingTime;
@@ -66,6 +64,10 @@ const initCollectiveParticipant = (
         cp.amount = amount;
         cp.price = price;
         cp.stakedAmount = NUM.ZERO;
+        cp.depositedShare = NUM.ZERO;
+        cp.lastCheckpointTWAP = 0;
+        cp.lastCheckpointTime = 0;
+        cp.lastCheckpointPercentageVested = 0;
         cp.save();
     }
     return cp;
@@ -111,7 +113,6 @@ export const setNewCollective = (
         collectiveAddress,
         creationDate,
         ownerAddress,
-        users,
         cliff,
         vestingTime
     );
@@ -170,6 +171,10 @@ export const setTokensStakedOrUnstaked = (
     participantAddress: Address,
     amount: BigDecimal,
     side: string,
+    depositedShare: BigDecimal,
+    lastCheckpointTWAP: i32,
+    lastCheckpointTime: i32,
+    lastCheckpointPercentageVested: i32,
 ): void => {
     const id = generateCpId(
         collectiveAddress,
@@ -179,6 +184,10 @@ export const setTokensStakedOrUnstaked = (
     if (cp) {
         if (side == 'staked') {
             cp.stakedAmount = cp.stakedAmount.plus(amount);
+            cp.depositedShare = depositedShare;
+            cp.lastCheckpointTWAP = lastCheckpointTWAP;
+            cp.lastCheckpointTime = lastCheckpointTime;
+            cp.lastCheckpointPercentageVested = lastCheckpointPercentageVested;
         } else if (side == 'unstake') {
             cp.stakedAmount = cp.stakedAmount.minus(amount);
         }

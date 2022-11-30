@@ -1,5 +1,6 @@
 import { Address } from "@graphprotocol/graph-ts";
 
+
 // generates CollectiveParticipant ID
 export const generateCpId = (
     collectiveAddress: Address,

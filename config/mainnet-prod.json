@@ -1,10 +1,8 @@
 {
     "network": "mainnet",
-    "GRouterAddress": "0x8E45C0936fa1a65bDaD3222bEFeC6a03C83372cE",
-    "GRouterStartBlock": 15581679,
-    "BuidlerFactoryAddress": "0x3BFbbf82657577668144921b96aAb72BC170646C",
+    "BuidlerFactoryAddress": "0xc6B407503dE64956Ad3cF5Ab112cA4f56AA13517",
     "BuidlerFactoryStartBlock": 15581679,
-    "BuidlCollectiveDeployedAddress": "0x3b21b7b09dd61e8cd9580ef516b3bbb80e8bf19f",
+    "BuidlCollectiveDeployedAddress": "0xccA9728291bC98ff4F97EF57Be3466227b0eb06C",
     "BuidlCollectiveDeployedStartBlock": 15581679
   }
   

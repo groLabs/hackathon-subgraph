@@ -1,3 +1,4 @@
+import { NUM } from '../utils/constants';
 import { tokenToDecimal } from '../utils/tokens';
 import {
     setNewAdmin,
@@ -27,7 +28,7 @@ export function handleNewCollectiveInitialized(event: LogNewCollectiveInitialize
         event.params.users,
         event.params.targets,
         event.params.cliff.toI32(),
-        event.params.vestimTime.toI32(),
+        event.params.vestingTime.toI32(),
     );
 }
 
@@ -44,6 +45,10 @@ export function handleTokensStaked(event: LogTokensStaked): void {
         event.params.user,
         tokenToDecimal(event.params._assetValue, 18, 7),
         'stake',
+        tokenToDecimal(event.params._depositedShare, 18, 7),
+        event.params._lastCheckpointTWAP.toI32(),
+        event.params._lastCheckpointTime.toI32(),
+        event.params._lastCheckpointPercentageVested.toI32(),
     );
 }
 
@@ -53,6 +58,10 @@ export function handleTokensUnstaked(event: LogTokensUnstaked): void {
         event.params.user,
         tokenToDecimal(event.params._assetValue, 18, 7),
         'unstaked',
+        NUM.ZERO,
+        0,
+        0,
+        0,
     );
 }
 

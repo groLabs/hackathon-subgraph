@@ -36,6 +36,10 @@ type CollectiveParticipant @entity {
   amount: BigDecimal!
   price: BigDecimal!
   stakedAmount: BigDecimal!
+  depositedShare: BigDecimal!
+  lastCheckpointTWAP: Int!
+  lastCheckpointTime: Int!
+  lastCheckpointPercentageVested: Int!
 }
 
 type CollectiveParticipantClaim @entity {
