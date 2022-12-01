@@ -1,8 +1,7 @@
 {
-    "network": "mainnet",
-    "BuidlerFactoryAddress": "0xc6B407503dE64956Ad3cF5Ab112cA4f56AA13517",
-    "BuidlerFactoryStartBlock": 15581679,
-    "BuidlCollectiveDeployedAddress": "0xccA9728291bC98ff4F97EF57Be3466227b0eb06C",
-    "BuidlCollectiveDeployedStartBlock": 15581679
-  }
-  
+  "network": "mainnet",
+  "BuidlerFactoryAddress": "0x01cf58e264d7578D4C67022c58A24CbC4C4a304E",
+  "BuidlerFactoryStartBlock": 15581679,
+  "BuidlCollectiveDeployedAddress": "0x25C0a2F0A077F537Bd11897F04946794c2f6f1Ef",
+  "BuidlCollectiveDeployedStartBlock": 15581679
+}

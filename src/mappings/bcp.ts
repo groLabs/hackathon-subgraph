@@ -15,9 +15,11 @@ import {
     LogNewPoolInitialized,
     LogNewCollectiveInitialized,
 } from '../../generated/templates/BuidlCollective/BuidlCollective';
-import { log } from '@graphprotocol/graph-ts';
 
-export function handleNewCollectiveInitialized(event: LogNewCollectiveInitialized): void {
+
+export function handleNewCollectiveInitialized(
+    event: LogNewCollectiveInitialized
+): void {
     setNewCollective(
         event.address,
         event.transaction.from,
@@ -40,18 +42,6 @@ export function handleNewAdmin(event: LogNewAdmin): void {
 }
 
 export function handleTokensStaked(event: LogTokensStaked): void {
-    log.error(
-        '*** BEFORE LogTokensStaked event -> amount {} event {} user {} depositedShare: {} lastCheckpointTWAP: {} lastCheckpointTime: {} lastCheckpointPercentageVested: {}',
-        [
-            event.params._assetValue.toString(),
-            event.address.toHex(),
-            event.params.user.toHexString(),
-            event.params._depositedShare.toString(),
-            event.params._lastCheckpointTWAP.toString(),
-            event.params._lastCheckpointTime.toString(),
-            event.params._lastCheckpointPercentageVested.toString(),
-        ]
-    );
     setTokensStakedOrUnstaked(
         event.address,
         event.params.user,
@@ -70,10 +60,10 @@ export function handleTokensUnstaked(event: LogTokensUnstaked): void {
         event.params.user,
         tokenToDecimal(event.params._assetValue, 18, 7),
         'unstaked',
-        NUM.ZERO,
-        0,
-        0,
-        0,
+        tokenToDecimal(event.params._unstakedShare, 18, 7),
+        event.params._lastCheckpointTWAP.toI32(),
+        event.params._lastCheckpointTime.toI32(),
+        event.params._lastCheckpointPercentageVested.toI32(),
     );
 }
 

@@ -56,7 +56,7 @@ templates:
           handler: handleNewPoolInitialized
         - event: LogTokensStaked(address,uint256,uint256,uint256,uint256,uint256)
           handler: handleTokensStaked
-        - event: LogTokensUnstaked(address,uint256)
+        - event: LogTokensUnstaked(address,uint256,uint256,uint256,uint256,uint256)
           handler: handleTokensUnstaked
         - event: LogTokensClaimed(address,uint256,address[],uint256[])
           handler: handleTokensClaimed

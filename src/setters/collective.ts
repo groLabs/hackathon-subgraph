@@ -40,6 +40,13 @@ const initCollective = (
         col.started_date = 0;
         col.save();
     }
+        log.info(
+            '*** initCollective -> collectiveAddress: {} ownerAddress: {}',
+            [
+                collectiveAddress.toHexString(),
+                ownerAddress.toHexString(),
+            ]
+        );
     return col;
 }
 
@@ -153,23 +160,6 @@ export const setNewAdmin = (
     }
 }
 
-// possibly to be removed
-export const setTokensStaked = (
-    collectiveAddress: Address,
-    participantAddress: Address,
-    amount: BigDecimal,
-): void => {
-    const id = generateCpId(
-        collectiveAddress,
-        participantAddress,
-    );
-    let cp = CollectiveParticipant.load(id);
-    if (cp) {
-        cp.stakedAmount = cp.stakedAmount.plus(amount);
-        cp.save();
-    }
-}
-
 export const setTokensStakedOrUnstaked = (
     collectiveAddress: Address,
     participantAddress: Address,
@@ -185,9 +175,8 @@ export const setTokensStakedOrUnstaked = (
         participantAddress,
     );
     let cp = CollectiveParticipant.load(id);
-    // TODO: For testing
-    log.error(
-        '*** setTokensStakedOrUnstaked event -> amount: {} depositedShare: {} lastCheckpointTWAP: {} lastCheckpointTime: {} lastCheckpointPercentageVested: {} side: {} id: {}',
+    log.info(
+        '*** setTokensStakedOrUnstaked -> amount: {} depositedShare: {} lastCheckpointTWAP: {} lastCheckpointTime: {} lastCheckpointPercentageVested: {} side: {} id: {}',
         [
             amount.toString(),
             depositedShare.toString(),
@@ -201,7 +190,7 @@ export const setTokensStakedOrUnstaked = (
     if (cp) {
         if (side == 'staked') {
             cp.stakedAmount = cp.stakedAmount.plus(amount);
-            cp.depositedShare = cp.depositedShare.plus(depositedShare);
+            cp.depositedShare = cp.depositedShare;
             cp.lastCheckpointTWAP = lastCheckpointTWAP;
             cp.lastCheckpointTime = lastCheckpointTime;
             cp.lastCheckpointPercentageVested = lastCheckpointPercentageVested;
@@ -228,7 +217,7 @@ export const setTokensClaimed = (
         cp.stakedAmount = cp.stakedAmount.minus(unstaked);
         cp.save();
     }
-    // missing: deduct claim on amounts
+    // TODO: deduct claim on amounts?
     for (let i = 0; i < tokens.length; i++) {
         const id = generateCpcId(
             collectiveAddress,
