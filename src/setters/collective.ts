@@ -46,6 +46,7 @@ const initCollective = (
 const initCollectiveParticipant = (
     collectiveAddress: Address,
     participantAddress: Address,
+    index: i32,
     name: string,
     tokenAddress: Address,
     amount: BigDecimal,
@@ -60,6 +61,7 @@ const initCollectiveParticipant = (
         cp = new CollectiveParticipant(id);
         cp.collectiveAddress = collectiveAddress.toHexString();
         cp.participantAddress = participantAddress.toHexString();
+        cp.index = index;
         cp.name = name;
         cp.tokenAddress = tokenAddress;
         cp.amount = amount;
@@ -124,6 +126,7 @@ export const setNewCollective = (
         initCollectiveParticipant(
             collectiveAddress,
             users[i],
+            i,
             names[i],
             tokens[i],
             amount,
