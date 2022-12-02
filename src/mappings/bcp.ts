@@ -1,9 +1,8 @@
-import { NUM } from '../utils/constants';
 import { tokenToDecimal } from '../utils/tokens';
+import { manageNewCollective } from '../managers/collective';
 import {
     setNewAdmin,
     setTokensClaimed,
-    setNewCollective,
     setPoolInitialized,
     setTokensStakedOrUnstaked,
 } from '../setters/collective';
@@ -20,7 +19,7 @@ import {
 export function handleNewCollectiveInitialized(
     event: LogNewCollectiveInitialized
 ): void {
-    setNewCollective(
+    manageNewCollective(
         event.address,
         event.transaction.from,
         event.block.timestamp.toI32(),

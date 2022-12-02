@@ -21,7 +21,19 @@ import {
 } from '../../generated/schema';
 
 
-const initCollective = (
+export const setNewAdmin = (
+    collectiveAddress: Address,
+    adminAddress: Address
+): void => {
+    const id = collectiveAddress.toHexString();
+    let col = Collective.load(id);
+    if (col) {
+        col.ownerAddress = adminAddress.toHexString();
+        col.save();
+    }
+}
+
+export const initCollective = (
     collectiveAddress: Address,
     creationDate: i32,
     ownerAddress: Address,
@@ -63,7 +75,7 @@ export const setPoolInitialized = (
     }
 }
 
-const initCollectiveParticipant = (
+export const initCollectiveParticipant = (
     collectiveAddress: Address,
     participantAddress: Address,
     index: i32,
@@ -96,7 +108,7 @@ const initCollectiveParticipant = (
     return cp;
 }
 
-const initCollectiveParticipantClaim = (
+export const initCollectiveParticipantClaim = (
     collectiveAddress: Address,
     participantAddress: Address,
     tokenAddress: Address,
@@ -117,60 +129,6 @@ const initCollectiveParticipantClaim = (
         cpc.save();
     }
     return cpc;
-}
-
-export const setNewCollective = (
-    collectiveAddress: Address,
-    ownerAddress: Address,
-    creationDate: i32,
-    names: string[],
-    tokens: Address[],
-    prices: BigInt[],
-    users: Address[],
-    amounts: BigInt[],
-    cliff: i32,
-    vestingTime: i32,
-): void => {
-    initUser(ownerAddress);
-    initCollective(
-        collectiveAddress,
-        creationDate,
-        ownerAddress,
-        cliff,
-        vestingTime
-    );
-    for (let i = 0; i < users.length; i++) {
-        initUser(users[i]);
-        const base = getBase(tokens[i]);
-        const amount = tokenToDecimal(amounts[i], base, 7);
-        initCollectiveParticipant(
-            collectiveAddress,
-            users[i],
-            i,
-            names[i],
-            tokens[i],
-            amount,
-            prices[i].toBigDecimal(),
-        );
-        initCollectiveParticipantClaim(
-            collectiveAddress,
-            users[i],
-            tokens[i],
-            NUM.ZERO,
-        );
-    }
-}
-
-export const setNewAdmin = (
-    collectiveAddress: Address,
-    adminAddress: Address
-): void => {
-    const id = collectiveAddress.toHexString();
-    let col = Collective.load(id);
-    if (col) {
-        col.ownerAddress = adminAddress.toHexString();
-        col.save();
-    }
 }
 
 export const setTokensStakedOrUnstaked = (
@@ -227,27 +185,45 @@ export const setTokensClaimed = (
     claims: BigInt[],
     depositedShare: BigDecimal,
 ): void => {
-    const id = generateCpId(
+    const idCp = generateCpId(
         collectiveAddress,
         participantAddress,
     );
-    let cp = CollectiveParticipant.load(id);
+    const _tokens = tokens.map<string>((token: Address) => token.toHexString());
+    const _claims = claims.map<string>((claim: BigInt) => claim.toString());
+    let msg = '*** setTokensClaimed -> collectiveAddress {} participantAddress {} ';
+    msg += 'depositedShare {} tokens {} claims {}'
+    log.info(
+        msg,
+        [
+            collectiveAddress.toHexString(),
+            participantAddress.toHexString(),
+            depositedShare.toString(),
+            _tokens.toString(),
+            _claims.toString(),
+        ]
+    );
+    let cp = CollectiveParticipant.load(idCp);
     if (cp) {
         cp.depositedShare = depositedShare;
         cp.save();
     }
     for (let i = 0; i < tokens.length; i++) {
-        const id = generateCpcId(
+        const idCpc = generateCpcId(
             collectiveAddress,
             participantAddress,
             tokens[i],
         );
         const base = getBase(tokens[i]);
         const claim = tokenToDecimal(claims[i], base, 7);
-        let cpc = CollectiveParticipantClaim.load(id);
-        if (cpc) {
-            cpc.claimAmount = cpc.claimAmount.plus(claim);
-            cpc.save();
+        let cpc = CollectiveParticipantClaim.load(idCpc);
+        if (!cpc) {
+            cpc = new CollectiveParticipantClaim(idCpc);
+            cpc.collectiveParticipant = idCp;
+            cpc.tokenAddress = tokens[i];
+            cpc.claimAmount = NUM.ZERO;
         }
+        cpc.claimAmount = cpc.claimAmount.plus(claim);
+        cpc.save();
     }
 }
