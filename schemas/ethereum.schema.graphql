@@ -40,7 +40,7 @@ type CollectiveParticipant @entity {
   depositedShare: BigDecimal!
   lastCheckpointTWAP: Int!
   lastCheckpointTime: Int!
-  lastCheckpointPercentageVested: Int!
+  lastCheckpointPercentageVested: BigDecimal!
 }
 
 type CollectiveParticipantClaim @entity {

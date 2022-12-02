@@ -50,7 +50,7 @@ export function handleTokensStaked(event: LogTokensStaked): void {
         tokenToDecimal(event.params._depositedShare, 18, 7),
         event.params._lastCheckpointTWAP.toI32(),
         event.params._lastCheckpointTime.toI32(),
-        event.params._lastCheckpointPercentageVested.toI32(),
+        tokenToDecimal(event.params._lastCheckpointPercentageVested, 18, 7),
     );
 }
 
@@ -63,7 +63,7 @@ export function handleTokensUnstaked(event: LogTokensUnstaked): void {
         tokenToDecimal(event.params._unstakedShare, 18, 7),
         event.params._lastCheckpointTWAP.toI32(),
         event.params._lastCheckpointTime.toI32(),
-        event.params._lastCheckpointPercentageVested.toI32(),
+        tokenToDecimal(event.params._lastCheckpointPercentageVested, 18, 7),
     );
 }
 
@@ -73,7 +73,7 @@ export function handleTokensClaimed(event: LogTokensClaimed): void {
         event.params.user,
         event.params.tokens,
         event.params.amounts,
-        tokenToDecimal(event.params.share, 18, 7), // TODO: event.params.unstakedAmount
+        tokenToDecimal(event.params.share, 18, 7),
     );
 }
 

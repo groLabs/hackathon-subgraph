@@ -40,14 +40,27 @@ const initCollective = (
         col.started_date = 0;
         col.save();
     }
-        log.info(
-            '*** initCollective -> collectiveAddress: {} ownerAddress: {}',
-            [
-                collectiveAddress.toHexString(),
-                ownerAddress.toHexString(),
-            ]
-        );
+    log.info(
+        '*** initCollective -> collectiveAddress: {} ownerAddress: {}',
+        [
+            collectiveAddress.toHexString(),
+            ownerAddress.toHexString(),
+        ]
+    );
     return col;
+}
+
+export const setPoolInitialized = (
+    collectiveAddress: Address,
+    startDate: i32,
+): void => {
+    const id = collectiveAddress.toHexString();
+    let col = Collective.load(id);
+    if (col) {
+        col.started = true;
+        col.started_date = startDate;
+        col.save();
+    }
 }
 
 const initCollectiveParticipant = (
@@ -77,7 +90,7 @@ const initCollectiveParticipant = (
         cp.depositedShare = NUM.ZERO;
         cp.lastCheckpointTWAP = 0;
         cp.lastCheckpointTime = 0;
-        cp.lastCheckpointPercentageVested = 0;
+        cp.lastCheckpointPercentageVested = NUM.ZERO;
         cp.save();
     }
     return cp;
@@ -168,15 +181,17 @@ export const setTokensStakedOrUnstaked = (
     depositedShare: BigDecimal,
     lastCheckpointTWAP: i32,
     lastCheckpointTime: i32,
-    lastCheckpointPercentageVested: i32,
+    lastCheckpointPercentageVested: BigDecimal,
 ): void => {
     const id = generateCpId(
         collectiveAddress,
         participantAddress,
     );
     let cp = CollectiveParticipant.load(id);
+    let msg = '*** setTokensStakedOrUnstaked -> amount: {} depositedShare: {} lastCheckpointTWAP: {}';
+    msg += ' lastCheckpointTime: {} lastCheckpointPercentageVested: {} side: {} id: {}'
     log.info(
-        '*** setTokensStakedOrUnstaked -> amount: {} depositedShare: {} lastCheckpointTWAP: {} lastCheckpointTime: {} lastCheckpointPercentageVested: {} side: {} id: {}',
+        msg,
         [
             amount.toString(),
             depositedShare.toString(),
@@ -196,6 +211,10 @@ export const setTokensStakedOrUnstaked = (
             cp.lastCheckpointPercentageVested = lastCheckpointPercentageVested;
         } else if (side == 'unstaked') {
             cp.stakedAmount = cp.stakedAmount.minus(amount);
+            cp.depositedShare = cp.depositedShare;
+            cp.lastCheckpointTWAP = lastCheckpointTWAP;
+            cp.lastCheckpointTime = lastCheckpointTime;
+            cp.lastCheckpointPercentageVested = lastCheckpointPercentageVested;
         }
         cp.save();
     }
@@ -206,7 +225,7 @@ export const setTokensClaimed = (
     participantAddress: Address,
     tokens: Address[],
     claims: BigInt[],
-    unstaked: BigDecimal,
+    depositedShare: BigDecimal,
 ): void => {
     const id = generateCpId(
         collectiveAddress,
@@ -214,10 +233,9 @@ export const setTokensClaimed = (
     );
     let cp = CollectiveParticipant.load(id);
     if (cp) {
-        cp.stakedAmount = cp.stakedAmount.minus(unstaked);
+        cp.depositedShare = depositedShare;
         cp.save();
     }
-    // TODO: deduct claim on amounts?
     for (let i = 0; i < tokens.length; i++) {
         const id = generateCpcId(
             collectiveAddress,
@@ -231,18 +249,5 @@ export const setTokensClaimed = (
             cpc.claimAmount = cpc.claimAmount.plus(claim);
             cpc.save();
         }
-    }
-}
-
-export const setPoolInitialized = (
-    collectiveAddress: Address,
-    startDate: i32,
-): void => {
-    const id = collectiveAddress.toHexString();
-    let col = Collective.load(id);
-    if (col) {
-        col.started = true;
-        col.started_date = startDate;
-        col.save();
     }
 }
